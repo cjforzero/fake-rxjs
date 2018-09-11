@@ -1,5 +1,6 @@
 import { toSubscribe } from "./toSubscriber";
 import { higherOrderMap } from "./operator/map";
+import { higherOrderFilter } from "./operator/filter";
 
 class Observable {
   constructor(subscribe) {
@@ -42,6 +43,10 @@ class Observable {
 
 Observable.prototype.map = function (project) {
   return higherOrderMap(project)(this);
+};
+
+Observable.prototype.filter = function (predicate) {
+  return higherOrderFilter(predicate)(this);
 };
 
 export default Observable;
