@@ -1,16 +1,19 @@
-class SafeSubscribe {
+export class SafeSubscribe {
   constructor(subscriber, observerOrNext) {
     let next;
+    let context = this;
     if (typeof observerOrNext === 'function') {
       next = observerOrNext
     } else if (observerOrNext) {
       next = observerOrNext.next;
+      context = Object.create(observerOrNext)
     }
+    this.context = context;
     this._next = next;
   }
 
   next(value) {
-    this._next.call(this, value);
+    this._next.call(this.context, value);
   }
 }
 
@@ -21,7 +24,10 @@ export class Subscriber {
   }
 
   next(value) {
-    this.destination.next(value);
+    this._next.call(this, value);
   }
 
+  _next(value) {
+    this.destination.next(value);
+  }
 }

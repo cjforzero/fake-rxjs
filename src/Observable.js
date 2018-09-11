@@ -1,7 +1,10 @@
 import { toSubscribe } from "./toSubscriber";
+import { higherOrderMap } from "./operator/map";
 
-export class Observable {
+class Observable {
   constructor(subscribe) {
+    this.source = null;
+    this.operator = null;
     if (subscribe) {
       this._subscribe = subscribe;
     }
@@ -11,12 +14,34 @@ export class Observable {
     return new Observable(subscribe);
   }
 
+  lift(operator) {
+    const observable = new Observable();
+    observable.source = this;
+    observable.operator = operator;
+    return observable;
+  }
+
+  _subscribe(subscribe) {
+    return this.source.subscribe(subscribe);
+  }
+
   subscribe(observerOrNext) {
+    const { operator } = this;
     const sink = toSubscribe(observerOrNext);
-    this._trySubscribe(sink)
+    if (operator) {
+      operator.call(sink, this.source);
+    } else {
+      this._trySubscribe(sink);
+    }
   }
 
   _trySubscribe(sink) {
     return this._subscribe(sink);
   }
 }
+
+Observable.prototype.map = function (project) {
+  return higherOrderMap(project)(this);
+};
+
+export default Observable;
