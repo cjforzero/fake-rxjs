@@ -30,4 +30,12 @@ export class Subscriber {
   _next(value) {
     this.destination.next(value);
   }
+
+  complete() {
+    this._complete();
+  }
+
+  _complete() {
+    this.destination.complete();
+  }
 }

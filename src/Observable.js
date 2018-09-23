@@ -1,7 +1,4 @@
 import { toSubscribe } from "./toSubscriber";
-import { higherOrderMap } from "./operator/map";
-import { higherOrderFilter } from "./operator/filter";
-import { higherOrderSwitchMap } from "./operator/switchMap";
 
 class Observable {
   constructor(subscribe) {
@@ -41,17 +38,5 @@ class Observable {
     return this._subscribe(sink);
   }
 }
-
-Observable.prototype.map = function (project) {
-  return higherOrderMap(project)(this);
-};
-
-Observable.prototype.filter = function (predicate) {
-  return higherOrderFilter(predicate)(this);
-};
-
-Observable.prototype.switchMap = function (project) {
-  return higherOrderSwitchMap(project)(this);
-};
 
 export default Observable;

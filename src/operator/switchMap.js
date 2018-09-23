@@ -3,20 +3,21 @@ import Observable from "../Observable";
 import { OuterSubscriber } from "../OuterSubscriber";
 
 class InnerSubscriber extends Subscriber {
-  constructor(parent, outerValue) {
+  constructor(parent, outerValue, outerIndex) {
     super();
     this.parent = parent;
     this.outerValue = outerValue;
+    this.outerIndex = outerIndex;
   }
 
   _next(value) {
-    this.parent.notifyNext(this.outerValue, value);
+    this.parent.notifyNext(this.outerValue, value, this.outerIndex);
   }
 
 }
 
-function subscribeToResult(outerSubscriber, result, outerValue) {
-  const destination = new InnerSubscriber(outerSubscriber, outerValue);
+export function subscribeToResult(outerSubscriber, result, outerValue, outerIndex) {
+  const destination = new InnerSubscriber(outerSubscriber, outerValue, outerIndex);
   if (result instanceof Observable) {
     return result.subscribe(destination)
   } else if (typeof result.length === 'number') {
